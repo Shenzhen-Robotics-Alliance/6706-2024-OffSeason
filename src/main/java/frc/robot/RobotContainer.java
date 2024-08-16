@@ -17,10 +17,14 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AimAtSpeaker;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
   private static final double k_driveSpeedLimitPercent = 1;
@@ -41,8 +45,10 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-  /* subsystems */
-  private final Arm arm = new Arm(); 
+      /* subsystems */
+  public static final Arm arm = new Arm(); 
+  public static final Intake intake = new Intake();
+  public static final Shooter shooter = new Shooter();
 
   private void configureBindings() {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -52,12 +58,18 @@ public class RobotContainer {
             .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
 
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    joystick.b().whileTrue(drivetrain
-        .applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+    joystick.x().whileTrue(drivetrain.applyRequest(() -> brake));
 
     // reset the field-centric heading on left bumper press
-    joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+
+    /* arm and shooter commands */
+    joystick.b().whileTrue(new AimAtSpeaker(arm, shooter));
+    joystick.rightTrigger(0.5).whileTrue(intake.launchNote());
+
+    /* intaker commands */
+    joystick.leftTrigger(0.5).whileTrue(intake.runIntakeUntilNotePresent());
+
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));

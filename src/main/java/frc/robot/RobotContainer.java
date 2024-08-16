@@ -7,19 +7,28 @@ package frc.robot;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
-  private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
-  private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+  private static final double k_driveSpeedLimitPercent = 1;
+  private static final double k_rotationalSpeedLimitPercent = 1;
+  private final SendableChooser<Command> autoChooser;
+
+  private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps * k_driveSpeedLimitPercent; // kSpeedAt12VoltsMps desired top speed
+  private double MaxAngularRate = 2 * Math.PI * k_rotationalSpeedLimitPercent; // 3/4 of a rotation per second max angular velocity
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
@@ -32,7 +41,8 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-  private final Telemetry logger = new Telemetry(MaxSpeed);
+  /* subsystems */
+  private final Arm arm = new Arm(); 
 
   private void configureBindings() {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -52,14 +62,18 @@ public class RobotContainer {
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
     }
-    drivetrain.registerTelemetry(logger::telemeterize);
   }
+
+  private final PowerDistribution pdp = new PowerDistribution(0, ModuleType.kCTRE);
 
   public RobotContainer() {
     configureBindings();
+    drivetrain.configureAuto();
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData(pdp);
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.getSelected();
   }
 }

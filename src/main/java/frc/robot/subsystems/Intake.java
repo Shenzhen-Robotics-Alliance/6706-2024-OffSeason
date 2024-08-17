@@ -4,10 +4,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class Intake extends SubsystemBase {
     private final TalonFX lowerIntakeFalcon = new TalonFX(9), upperIntakeFalcon = new TalonFX(11);
@@ -49,6 +52,14 @@ public class Intake extends SubsystemBase {
             .onlyIf(() -> !this.hasNote())
             .until(this::hasNote)
             .finallyDo(this::runIdle);
+    }
+
+    public Command runIntakeUntilNotePresent(XboxController hid) {
+        final SequentialCommandGroup group = new SequentialCommandGroup();
+
+        group.addCommands(runIntakeUntilNotePresent());
+        group.addCommands(Commands.run(() -> hid.setRumble(RumbleType.kBothRumble, 1)).withTimeout(0.5));
+        return group.finallyDo(() -> hid.setRumble(RumbleType.kBothRumble, 0));
     }
 
     public Command launchNote() {

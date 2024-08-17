@@ -89,7 +89,7 @@ public class RobotContainer {
     
 
     /* intaker commands */
-    joystick.leftTrigger(0.5).whileTrue(intake.runIntakeUntilNotePresent());
+    joystick.leftTrigger(0.5).whileTrue(intake.runIntakeUntilNotePresent(joystick.getHID()));
 
 
     if (Utils.isSimulation()) {

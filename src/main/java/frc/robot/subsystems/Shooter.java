@@ -28,13 +28,13 @@ public class Shooter extends SubsystemBase {
     upperShooterTalonFX.set(0);
   }
 
-  public void runShoot() {
-    lowerShooterTalonFX.set(0.5);
-    upperShooterTalonFX.set(0.5);
+  public void runSpeakerShoot() {
+    lowerShooterTalonFX.set(0.7);
+    upperShooterTalonFX.set(0.7);
   }
 
-  public void runAmp() {
-    lowerShooterTalonFX.set(0.5);
-    upperShooterTalonFX.set(0.5);
+  public void runAmpShoot() {
+    lowerShooterTalonFX.set(0.25);
+    upperShooterTalonFX.set(0.35);
   }
 }

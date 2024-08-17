@@ -8,6 +8,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,7 +20,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AimAtAMP;
 import frc.robot.commands.AimAtSpeaker;
+import frc.robot.commands.NoteStucked;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -36,6 +39,8 @@ public class RobotContainer {
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
+  private final CommandXboxController viceJoystick = new CommandXboxController(1);//Vice joystick
+
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -51,11 +56,18 @@ public class RobotContainer {
   public static final Shooter shooter = new Shooter();
 
   private void configureBindings() {
-    drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+   /* drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with
                                                                                            // negative Y (forward)
             .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
             .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+        ));
+   */
+    drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+        drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getRightY() * MaxSpeed) // Drive forward with
+                                                                                           // negative Y (forward)
+            .withVelocityY(-joystick.getRightX() * MaxSpeed) // Drive left with negative X (left)
+            .withRotationalRate(-joystick.getLeftX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
 
     joystick.x().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -64,8 +76,16 @@ public class RobotContainer {
     joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     /* arm and shooter commands */
-    joystick.b().whileTrue(new AimAtSpeaker(arm, shooter));
+    // joystick.b().whileTrue(new AimAtSpeaker(arm, shooter));
+    joystick.leftBumper().whileTrue(new AimAtSpeaker(arm, shooter));    //Starting Shooter, Ready to Shoot
     joystick.rightTrigger(0.5).whileTrue(intake.launchNote());
+
+    viceJoystick.leftTrigger(0.5).whileTrue(new AimAtAMP(arm, shooter));
+    viceJoystick.rightTrigger(0.5).whileTrue(intake.launchNote());
+    
+    joystick.y().whileTrue(new NoteStucked(arm, intake));
+    
+    
 
     /* intaker commands */
     joystick.leftTrigger(0.5).whileTrue(intake.runIntakeUntilNotePresent());
@@ -76,12 +96,18 @@ public class RobotContainer {
     }
   }
 
+  private void configureAutoCommands() {
+    NamedCommands.registerCommand("raise arm", Commands.run(() -> arm.runSetPointProfiled(40), arm));
+  }
+
   private final PowerDistribution pdp = new PowerDistribution(0, ModuleType.kCTRE);
 
   public RobotContainer() {
     configureBindings();
+    configureAutoCommands();
     drivetrain.configureAuto();
     autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Select Auto", autoChooser);
     SmartDashboard.putData(pdp);
   }
 

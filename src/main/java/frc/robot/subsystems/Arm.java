@@ -28,9 +28,10 @@ public class Arm extends SubsystemBase{
     private final boolean k_armEncoderInverted = true;
 
     /* arm positions, in degrees */
-    public static final double INTAKE_POSITION_DEG = -13,
-        SCORE_POSITION_DEG = 15,
-        AMP_POSITION_DEG = 70;
+    public static final double INTAKE_POSITION_DEG = -12.8,
+        SCORE_POSITION_DEG = 0,
+        NOTE_STUCK_DEG = 10,
+        AMP_POSITION_DEG = 90;
 
     private State currentStateDeg = new State(INTAKE_POSITION_DEG, 0);
     private double setPointDeg = INTAKE_POSITION_DEG;
@@ -38,10 +39,9 @@ public class Arm extends SubsystemBase{
         armMotor.setNeutralMode(NeutralModeValue.Coast);
         armMotor.setInverted(true);
 
-        setDefaultCommand(Commands.run(() -> runSetPointProfiled(SCORE_POSITION_DEG), this));
+        setDefaultCommand(Commands.run(() -> runSetPointProfiled(INTAKE_POSITION_DEG), this));
     }
 
-    private final XboxController xboxController = new XboxController(1);
     @Override
     public void periodic() {
         // if (Math.abs(xboxController.getRightY()) > 0)

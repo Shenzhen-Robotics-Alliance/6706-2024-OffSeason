@@ -34,6 +34,11 @@ public class Intake extends SubsystemBase {
         upperIntakeFalcon.set(0.3);
     }
 
+    //Shooter out the Node when note is stucked in.
+    public void runReverse(){
+        lowerIntakeFalcon.set(-0.3);
+        upperIntakeFalcon.set(-0.3);
+    }
     public void runShoot() {
         lowerIntakeFalcon.set(0);
         upperIntakeFalcon.set(0.3);
@@ -50,6 +55,13 @@ public class Intake extends SubsystemBase {
             .onlyIf(this::hasNote)
             .until(()-> !this.hasNote());
     }
+
+    //  //Shooter out the Node when note is stucked in.
+    // public Command outNote() {
+    //     return Commands.run(this::outIntake, this)
+    //         .onlyIf(this::hasNote)
+    //         .until(()-> !this.hasNote());
+    // }
     
     @Override
     public void periodic() {

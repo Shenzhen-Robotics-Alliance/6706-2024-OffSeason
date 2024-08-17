@@ -47,7 +47,8 @@ public class Intake extends SubsystemBase {
     public Command runIntakeUntilNotePresent() {
         return Commands.run(this::runIntake, this)
             .onlyIf(() -> !this.hasNote())
-            .until(this::hasNote);
+            .until(this::hasNote)
+            .finallyDo(this::runIdle);
     }
 
     public Command launchNote() {

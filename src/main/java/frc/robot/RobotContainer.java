@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AimAtAMP;
 import frc.robot.commands.AimAtSpeaker;
 import frc.robot.commands.NoteStucked;
+import frc.robot.commands.ShootSequence;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -97,7 +98,8 @@ public class RobotContainer {
   }
 
   private void configureAutoCommands() {
-    NamedCommands.registerCommand("raise arm", Commands.run(() -> arm.runSetPointProfiled(40), arm));
+    NamedCommands.registerCommand("shoot sequence", new ShootSequence(arm, intake, shooter));
+    NamedCommands.registerCommand("intake note", intake.runIntakeUntilNotePresent());
   }
 
   private final PowerDistribution pdp = new PowerDistribution(0, ModuleType.kCTRE);

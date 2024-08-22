@@ -1,0 +1,62 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.36,
+      "y": 5.54
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot sequence"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Leave Middle Bluecommunity"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake note"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Back to Middle Bluecommunity"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot sequence"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Leave Middle Bluecommunity"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Blue Alliance Autos",
+  "choreoAuto": false
+}

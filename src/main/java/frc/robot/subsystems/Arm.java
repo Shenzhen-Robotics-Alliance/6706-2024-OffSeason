@@ -28,10 +28,12 @@ public class Arm extends SubsystemBase{
     private final boolean k_armEncoderInverted = true;
 
     /* arm positions, in degrees */
-    public static final double INTAKE_POSITION_DEG = -12.8,
-        SCORE_POSITION_DEG = 0,
-        NOTE_STUCK_DEG = 10,
-        AMP_POSITION_DEG = 90;
+    public static final double INTAKE_POSITION_DEG = -12.8,   //Initialize the arm angle
+        SCORE_POSITION_DEG = 0,                     //Arm angle when shooting note to speaker
+        NOTE_STUCK_DEG = 10,                        //Arm angle when shooting out the stucked note
+        AMP_POSITION_DEG = 90,                      //Arm angle when shooting note to the AMP
+        Auto_NotInMiddle = -5;                       //Arm angle when shooting note in Autonomous if Robo is placed left or right side of community
+
 
     private State currentStateDeg = new State(INTAKE_POSITION_DEG, 0);
     private double setPointDeg = INTAKE_POSITION_DEG;

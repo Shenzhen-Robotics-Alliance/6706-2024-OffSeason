@@ -33,20 +33,24 @@ public class Intake extends SubsystemBase {
     }
 
     public void runIntake() {
-        lowerIntakeFalcon.set(0.3);
-        upperIntakeFalcon.set(0.3);
+        lowerIntakeFalcon.set(0.35);
+        upperIntakeFalcon.set(0.2);
     }
 
-    //Shooter out the Node when note is stucked in.
+    //Shoote out the Node when note is stucked in.
     public void runReverse(){
-        lowerIntakeFalcon.set(-0.3);
-        upperIntakeFalcon.set(-0.3);
+        lowerIntakeFalcon.set(-0.35);
+        upperIntakeFalcon.set(-0.35);
     }
+
+
     public void runShoot() {
         lowerIntakeFalcon.set(0);
         upperIntakeFalcon.set(0.3);
     }
 
+
+    /* Intake note until getting the note then stop the intake motor(runIdle) */
     public Command runIntakeUntilNotePresent() {
         return Commands.run(this::runIntake, this)
             .onlyIf(() -> !this.hasNote())
@@ -54,6 +58,10 @@ public class Intake extends SubsystemBase {
             .finallyDo(this::runIdle);
     }
 
+
+    /*
+     * To make the Joystick vibrating when the intake get the note
+     */
     public Command runIntakeUntilNotePresent(XboxController hid) {
         final SequentialCommandGroup group = new SequentialCommandGroup();
 
@@ -62,6 +70,9 @@ public class Intake extends SubsystemBase {
         return group.finallyDo(() -> hid.setRumble(RumbleType.kBothRumble, 0));
     }
 
+    /*
+     * UpperIntake prepare to send the  note to the shooter wheel
+     */
     public Command launchNote() {
         return Commands.run(this::runShoot, this)
             .onlyIf(this::hasNote)

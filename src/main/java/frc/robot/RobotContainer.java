@@ -31,8 +31,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
-  private static final double k_driveSpeedLimitPercent = 1;
-  private static final double k_rotationalSpeedLimitPercent = 1;
+  private static final double k_driveSpeedLimitPercent = 0.75;
+  private static final double k_rotationalSpeedLimitPercent = 0.75;
   private final SendableChooser<Command> autoChooser;
 
   private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps * k_driveSpeedLimitPercent; // kSpeedAt12VoltsMps desired top speed
@@ -98,8 +98,11 @@ public class RobotContainer {
   }
 
   private void configureAutoCommands() {
-    NamedCommands.registerCommand("shoot sequence", new ShootSequence(arm, intake, shooter));
+    NamedCommands.registerCommand("shoot sequence", new ShootSequence(arm, intake, shooter, Arm.SCORE_POSITION_DEG));
+    //NamedCommands.registerCommand("shoot sequence two", new ShootSequence(arm, intake, shooter, Arm.SCORE_POSITION_DEG));
     NamedCommands.registerCommand("intake note", intake.runIntakeUntilNotePresent());
+    NamedCommands.registerCommand("shoot sequence left or right", new ShootSequence(arm, intake, shooter, Arm.Auto_NotInMiddle));
+    // NamedCommands.registerCommand("intake note", intake.runIntakeUntilNotePresent());
   }
 
   private final PowerDistribution pdp = new PowerDistribution(0, ModuleType.kCTRE);

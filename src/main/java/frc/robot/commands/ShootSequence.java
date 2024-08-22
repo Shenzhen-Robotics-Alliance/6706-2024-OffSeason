@@ -7,20 +7,26 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 public class ShootSequence extends SequentialCommandGroup{
-    public ShootSequence(Arm arm, Intake intake, Shooter shooter) {
+    public ShootSequence(Arm arm, Intake intake, Shooter shooter,double armPosition) {
         super.addRequirements(arm, intake, shooter);
 
-        super.addCommands(Commands.run(() -> {
-            arm.runSetPointProfiled(Arm.SCORE_POSITION_DEG);
-            shooter.runSpeakerShoot();
-        }, arm, shooter).withTimeout(2));
+        /*
+         * The following steps are done in the Autonomous time
+         * when the robot are placed in the middle.
+         */
 
-        super.addCommands(Commands.run(intake::runShoot, intake).withTimeout(0.5));
+        //First step: Shoot the preload note to the speaker
+        super.addCommands(Commands.run(() -> {
+            arm.runSetPointProfiled(armPosition);               //Set the Arm to aim the Speaker
+            shooter.runSpeakerShoot();                          //Start shooting motors
+        }, arm, shooter).withTimeout(0.8));
+
+        super.addCommands(Commands.run(intake::runShoot, intake).withTimeout(0.3));     //Shooting the note
 
         super.addCommands(Commands.run(() -> {
             intake.runIdle();
             arm.runSetPointProfiled(Arm.INTAKE_POSITION_DEG);
             shooter.runIdle();
-        }, arm, shooter).withTimeout(2));
+        }, arm, shooter).withTimeout(0.2));
     }
 }

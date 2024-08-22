@@ -23,18 +23,32 @@ public class Shooter extends SubsystemBase {
         setDefaultCommand(Commands.run(this::runIdle, this));
   }
 
+  /*
+   * Stop the shooting motors
+   */
   public void runIdle() {
     lowerShooterTalonFX.set(0);
     upperShooterTalonFX.set(0);
   }
 
+  /*
+   * Start two motors to shoote the note to the speaker
+   * in a high speed
+   */
   public void runSpeakerShoot() {
     lowerShooterTalonFX.set(0.7);
     upperShooterTalonFX.set(0.7);
+    // lowerShooterTalonFX.set(0.2);
+    // upperShooterTalonFX.set(0.2);
   }
 
+  /*
+   * Start two motors to slowly shoote the note to the AMP
+   */
   public void runAmpShoot() {
-    lowerShooterTalonFX.set(0.25);
-    upperShooterTalonFX.set(0.35);
+    lowerShooterTalonFX.set(0.3);
+    upperShooterTalonFX.set(0.4);
+    // lowerShooterTalonFX.set(0.1);
+    // upperShooterTalonFX.set(0.1);
   }
 }

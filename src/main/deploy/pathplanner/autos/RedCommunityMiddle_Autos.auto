@@ -1,0 +1,75 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 15.18,
+      "y": 5.55
+    },
+    "rotation": 0.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot sequence"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Leave Middle Redcommunity"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake note"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Back to Middle Redcommunity"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot sequence"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Leave Middle Redcommunity Cross Baseline"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake note"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Red Alliance Autos",
+  "choreoAuto": false
+}

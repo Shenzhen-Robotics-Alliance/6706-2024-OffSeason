@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6807503073695607,
-      "y": 6.712444649960525
+      "x": 0.7,
+      "y": 4.37
     },
-    "rotation": -120.0
+    "rotation": 120.0
   },
   "command": {
     "type": "sequential",
@@ -14,18 +14,24 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot sequence"
+            "name": "shoot sequence left or right"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "leave community"
+            "pathName": "Leave Right Bluecommunity Cross Baseline"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake note"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Blue Alliance Autos",
   "choreoAuto": false
 }
